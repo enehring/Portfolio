@@ -1,0 +1,24 @@
+﻿@page
+@model Portfolio.Pages.TreasuriesModel
+@{
+}
+
+<div class="text-center">
+    <h1>TODO</h1>
+
+    <input type="button" value="GetSecurity" />
+
+    <table class="table">
+        <tr>
+            <td>
+                @Model.Treasury?.Cusip
+            </td>
+            <td>
+                @Model.Treasury?.SecurityType
+            </td>
+            <td>
+                @Model.Treasury?.IssueDate
+            </td>
+        </tr>
+    </table>
+</div>
