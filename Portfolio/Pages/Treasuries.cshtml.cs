@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 
 namespace Portfolio.Pages;
@@ -7,19 +9,36 @@ public class TreasuriesModel : PageModel
 {
     private readonly TreasuryDirectService _treasuryDirectService;
 
+    [BindProperty, Required]
+    public string Cusip { get; set; }
+
+    [BindProperty, Required]
+    public DateTime IssueDate { get; set; }
+
     public TreasuryDirectSecurityIssuanceResult? Treasury { get; private set; }
 
     public TreasuriesModel(IHttpClientFactory httpClientFactory)
     {
         _treasuryDirectService = new TreasuryDirectService(httpClientFactory);
+
+        Cusip = "912797JV0";
+        IssueDate = new DateTime(2024, 04, 09);
     }
 
-    public async Task OnGet()
+    public void OnGet()
     {
-        var result = await _treasuryDirectService.GetSecurity("912797JV0", new DateTime(2024, 04, 09));
+
+    }
+
+    public async Task<IActionResult> OnPostAsync()
+    {
+        var result = await _treasuryDirectService.GetSecurity(Cusip, IssueDate);
 
         Treasury = result;
+
+        return Partial("_TreasuriesTable", Treasury);
     }
+
 }
 
 #region Treasury Direct Service
@@ -76,7 +95,6 @@ public enum TreasuryDirectSecurityType
     Bill = 1,
     Note = 2,
     Bond = 3
-
 }
 
 #endregion Treasury Direct Service

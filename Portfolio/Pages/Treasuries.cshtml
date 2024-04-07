@@ -1,24 +1,21 @@
 ﻿@page
 @model Portfolio.Pages.TreasuriesModel
-@{
-}
+
+<script src="https://unpkg.com/htmx.org@1.9.11"></script>
 
 <div class="text-center">
     <h1>TODO</h1>
 
-    <input type="button" value="GetSecurity" />
+    <form method="post" hx-post="@Url.Page("Treasuries")" hx-target="#results">
+        <label>Cusip:</label><input type="text" asp-for="@Model.Cusip" />
+        <label>Issue Date:</label><input type="date" asp-for="@Model.IssueDate"/><br />
+        <button type="submit" class="btn btn-outline-primary">
+            Submit
+        </button>
+    </form>
+    
+    <div id="results">
 
-    <table class="table">
-        <tr>
-            <td>
-                @Model.Treasury?.Cusip
-            </td>
-            <td>
-                @Model.Treasury?.SecurityType
-            </td>
-            <td>
-                @Model.Treasury?.IssueDate
-            </td>
-        </tr>
-    </table>
+    </div>
+    
 </div>
