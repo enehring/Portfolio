@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Portfolio.Pages;
 
@@ -15,14 +16,12 @@ public class TreasuriesModel : PageModel
     [BindProperty, Required]
     public DateTime IssueDate { get; set; }
 
-    public TreasuryDirectSecurityIssuanceResult? Treasury { get; private set; }
-
     public TreasuriesModel(IHttpClientFactory httpClientFactory)
     {
         _treasuryDirectService = new TreasuryDirectService(httpClientFactory);
 
-        Cusip = "912797JV0";
-        IssueDate = new DateTime(2024, 04, 09);
+        Cusip = string.Empty;
+        IssueDate = DateTime.Today;
     }
 
     public void OnGet()
@@ -32,13 +31,11 @@ public class TreasuriesModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
-        var result = await _treasuryDirectService.GetSecurity(Cusip, IssueDate);
+        // Get previous week's announced securities
+        var treasury = await _treasuryDirectService.GetAnnouncedSecurities(DateTime.Today.AddDays(-7));
 
-        Treasury = result;
-
-        return Partial("_TreasuriesTable", Treasury);
+        return Partial("_TreasuriesTable", treasury);
     }
-
 }
 
 #region Treasury Direct Service
@@ -53,30 +50,55 @@ public class TreasuryDirectService
         _httpClientFactory = httpClientFactory;
         _options = new JsonSerializerOptions
         {
-            PropertyNameCaseInsensitive = true
+            PropertyNameCaseInsensitive = true,
+            NumberHandling = JsonNumberHandling.AllowReadingFromString,
+            Converters =
+            {
+                new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+            }
         };
     }
 
     public async Task<TreasuryDirectSecurityIssuanceResult?> GetSecurity(string cusip, DateTime issueDate)
     {
         var url = $"https://www.treasurydirect.gov/TA_WS/securities/{cusip}/{issueDate:MM/dd/yyyy}?format=json";
+        var response = await GetTreasuryDirectJsonData(url);
 
-        var client = _httpClientFactory.CreateClient();
-        var request = new HttpRequestMessage(HttpMethod.Get, url);
-        var response = await client.SendAsync(request);
-
-        if (response.IsSuccessStatusCode)
+        // TreasuryDirect will return a 200 status code with "No data" in the body if no security matching the
+        // request is found
+        if (response == "No data")
         {
-            using (var contentStream = await response.Content.ReadAsStreamAsync())
-            {
-                return await JsonSerializer.DeserializeAsync<TreasuryDirectSecurityIssuanceResult>(
-                    contentStream,
-                    _options);
-            }
+            return null;
         }
 
-        // TODO: return status code
-        throw new Exception();
+        return JsonSerializer.Deserialize<TreasuryDirectSecurityIssuanceResult>(response, _options);
+    }
+
+    public async Task<IEnumerable<TreasuryDirectSecurityIssuanceResult>?> GetAnnouncedSecurities(DateTime announceDate)
+    {
+        var daysSinceAnnouncement = DateTime.Today.Subtract(announceDate.Date).Days;
+        var url = $"https://www.treasurydirect.gov/TA_WS/securities/announced?days={daysSinceAnnouncement}&format=json";
+        var response = await GetTreasuryDirectJsonData(url);
+
+        // TreasuryDirect will return a 200 status code with "No data" in the body if no security matching the
+        // request is found
+        if (response == "No data")
+        {
+            return null;
+        }
+
+        return JsonSerializer.Deserialize<IEnumerable<TreasuryDirectSecurityIssuanceResult>>(response, _options);
+    }
+
+    private async Task<string> GetTreasuryDirectJsonData(string url)
+    {
+        var client = _httpClientFactory.CreateClient();
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+        using (var response = await client.SendAsync(request))
+        {
+            return await response.Content.ReadAsStringAsync();
+        }
     }
 }
 
@@ -86,7 +108,11 @@ public class TreasuryDirectSecurityIssuanceResult
 
     public DateTime? IssueDate { get; set; }
 
-    public string? SecurityType { get; set; }
+    public double? OfferingAmount { get; set; }
+
+    public TreasuryDirectSecurityType? SecurityType { get; set; }
+
+    public string? SecurityTerm { get; set; }
 }
 
 public enum TreasuryDirectSecurityType

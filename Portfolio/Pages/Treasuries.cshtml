@@ -7,15 +7,23 @@
     <h1>TODO</h1>
 
     <form method="post" hx-post="@Url.Page("Treasuries")" hx-target="#results">
-        <label>Cusip:</label><input type="text" asp-for="@Model.Cusip" />
-        <label>Issue Date:</label><input type="date" asp-for="@Model.IssueDate"/><br />
-        <button type="submit" class="btn btn-outline-primary">
-            Submit
-        </button>
+        <div class="form-control-plaintext">
+            <label>Cusip:</label><input type="text" asp-for="@Model.Cusip" />
+        </div>
+        <div class="form-control-plaintext">
+            <label>Issue Date:</label><input type="date" asp-for="@Model.IssueDate" /><br />
+        </div>
+        <div>
+
+        </div>
+        <div class="form-control-plaintext">
+            <button type="submit" class="btn btn-outline-primary">
+                Submit
+            </button>
+        </div>
     </form>
     
     <div id="results">
-
     </div>
     
 </div>

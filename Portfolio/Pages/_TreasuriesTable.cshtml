@@ -1,16 +1,29 @@
-﻿@model TreasuryDirectSecurityIssuanceResult
-
+﻿@* TODO: Don't bind directly to the TreasuryDirect service result' *@
+@model IEnumerable<TreasuryDirectSecurityIssuanceResult> 
 
 <table class="table">
-    <tr>
-        <td>
-            @Model.Cusip
-        </td>
-        <td>
-            @Model.SecurityType
-        </td>
-        <td>
-            @Model.IssueDate
-        </td>
-    </tr>
+    <thead>
+        <tr>
+            <th>CUSIP</th>
+            <th>Issue Date</th>
+            <th>Security Type</th>
+            <th>Term</th>
+            <th>Offering Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            foreach (var result in Model)
+            {
+                <tr>
+                    <td>@result.Cusip</td>
+                    <td>@result.IssueDate?.ToShortDateString()</td>
+                    <td>@result.SecurityType</td>
+                    <td>@result.SecurityTerm</td>
+                    <td>@result.OfferingAmount</td>
+                </tr>
+            }
+        }
+    </tbody>
 </table>
