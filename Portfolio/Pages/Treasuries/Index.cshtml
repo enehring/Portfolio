@@ -1,0 +1,15 @@
+﻿@page
+@model Portfolio.Pages.Treasuries.TreasuriesModel
+@{
+    ViewData["Title"] = "Treasuries";
+}
+
+<script src="https://unpkg.com/htmx.org@2.0.4"></script>
+
+<div class="text-center">
+    <h1>Todays Auctions</h1>
+
+    <div hx-get="@Url.Page("", "Auctions", new { asOf = DateTime.Today })" hx-trigger="load">
+
+    </div>
+</div>

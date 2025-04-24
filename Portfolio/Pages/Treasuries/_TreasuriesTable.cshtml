@@ -1,0 +1,53 @@
+﻿@model Portfolio.Pages.Treasuries.TreasuryDirect.Models.TreasuryDirectSecurityIssuance[]
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>CUSIP</th>
+            <th>Issue Date</th>
+            <th>Security Type</th>
+            <th>Term</th>
+            <th>Offering Amount</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Length == 0)
+        {
+            <tr>
+                <td colspan="6">
+                    No Auctions Today!
+                </td>
+            </tr>
+        }
+        else
+        {
+            foreach (var security in Model)
+            {
+                <tr>
+                    <td>@security.Cusip</td>
+                    <td>@security.IssueDate.ToShortDateString()</td>
+                    <td>
+                        @if (security.SecurityType.HasValue)
+                        {
+                            <text>@security.SecurityType.Value</text>
+                        }
+                        else
+                        {
+                            <text>(none)</text>
+                        }
+                    </td>
+                    <td>@security.SecurityTerm</td>
+                    <td>@security.OfferingAmount</td>
+                    <td>
+                        <a asp-page="/Treasuries/Details"
+                           asp-route-cusip="@security.Cusip"
+                           asp-route-issueDate="@security.IssueDate.ToShortDateString()">
+                            Details
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
