@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Portfolio.Services.TreasuryDirect;
 
-namespace Portfolio.Pages.Treasuries
+namespace Portfolio.Pages.Treasuries.Details
 {
-    public class DetailsModel : PageModel
+    public class IndexModel : PageModel
     {
         private readonly TreasuryDirectService _treasuryDirectService;
 
-        public DetailsModel(IHttpClientFactory httpClientFactory)
+        public IndexModel(IHttpClientFactory httpClientFactory)
         {
             _treasuryDirectService = new TreasuryDirectService(httpClientFactory);
         }
@@ -15,6 +15,8 @@ namespace Portfolio.Pages.Treasuries
         public async Task OnGet(string cusip, DateTime issueDate)
         {
             var result = await _treasuryDirectService.GetSecurityDetails(cusip, issueDate);
+
+            // TODO
         }
     }
 }
