@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Portfolio.Pages.Treasuries.TreasuryDirect;
+using Portfolio.Services.TreasuryDirect;
 
 namespace Portfolio.Pages.Treasuries
 {
@@ -12,9 +12,9 @@ namespace Portfolio.Pages.Treasuries
             _treasuryDirectService = new TreasuryDirectService(httpClientFactory);
         }
 
-        public void OnGet(string cusip, DateTime issueDate)
+        public async Task OnGet(string cusip, DateTime issueDate)
         {
-            var result = _treasuryDirectService.GetSecurityDetails(cusip, issueDate);
+            var result = await _treasuryDirectService.GetSecurityDetails(cusip, issueDate);
         }
     }
 }

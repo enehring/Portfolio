@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Portfolio.Pages.Treasuries.TreasuryDirect;
+using Portfolio.Services.TreasuryDirect;
 
 namespace Portfolio.Pages.Treasuries;
 

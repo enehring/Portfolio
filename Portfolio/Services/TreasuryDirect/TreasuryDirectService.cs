@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 using System.Text.Json;
-using Portfolio.Pages.Treasuries.TreasuryDirect.Models;
+using Portfolio.Services.TreasuryDirect.Models;
 
-namespace Portfolio.Pages.Treasuries.TreasuryDirect;
+namespace Portfolio.Services.TreasuryDirect;
 
 // TODO: The Treasury Direct URI should probably be factored out (ie. hostname, route, etc.) as this grows.
 public class TreasuryDirectService

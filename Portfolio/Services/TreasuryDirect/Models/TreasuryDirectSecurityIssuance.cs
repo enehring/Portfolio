@@ -1,4 +1,4 @@
-﻿namespace Portfolio.Pages.Treasuries.TreasuryDirect.Models;
+﻿namespace Portfolio.Services.TreasuryDirect.Models;
 
 public class TreasuryDirectSecurityIssuance
 {
