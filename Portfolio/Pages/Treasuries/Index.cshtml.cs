@@ -20,8 +20,16 @@ public class TreasuriesModel : PageModel
 
     public async Task<IActionResult> OnGetAuctions(DateTime asOf)
     {
-        var treasuryDirectSecurities = await _treasuryDirectService.GetAuctionedSecurities(asOf);
+        try
+        {
+            var treasuryDirectSecurities = await _treasuryDirectService.GetAuctionedSecurities(asOf);
 
-        return Partial("_TreasuriesTable", treasuryDirectSecurities);
+            return Partial("_Auctions", treasuryDirectSecurities);
+        }
+        catch
+        {
+            Response.StatusCode = StatusCodes.Status500InternalServerError;
+            return Partial("_AuctionsError");
+        }
     }
 }

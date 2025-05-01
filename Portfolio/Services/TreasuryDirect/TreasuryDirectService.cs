@@ -38,17 +38,6 @@ public class TreasuryDirectService
         return deserializedResponse;
     }
 
-    public async Task<TreasuryDirectSecurityIssuance[]> GetAnnouncedSecurities(int daysSinceAnnouncement)
-    {
-        var url = $"https://www.treasurydirect.gov/TA_WS/securities/announced?days={daysSinceAnnouncement}&format=json";
-        var response = await SendTreasuryDirectGetRequest(url);
-        var deserializedResponse = JsonSerializer.Deserialize<TreasuryDirectSecurityIssuance[]>(
-            response,
-            _options);
-
-        return deserializedResponse ?? Array.Empty<TreasuryDirectSecurityIssuance>();
-    }
-
     public async Task<TreasuryDirectSecurityIssuance[]> GetAuctionedSecurities(DateTime asOf)
     {
         var timeSinceAuction = DateTime.Today.Subtract(asOf);
@@ -83,7 +72,7 @@ public class TreasuryDirectService
             // TODO: Do something better
             Console.WriteLine($"GET {url} failed. Status Code: {ex.StatusCode}");
 
-            return string.Empty;
+            throw;
         }
     }
 
