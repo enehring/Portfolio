@@ -42,7 +42,7 @@
                     <td>
                         <a asp-page="/Treasuries/Details/Index"
                            asp-route-cusip="@security.Cusip"
-                           asp-route-issueDate="@security.IssueDate.ToShortDateString()">
+                           asp-route-issueDate="@security.IssueDate.ToString("MM-dd-yyyy")">
                             Details
                         </a>
                     </td>
