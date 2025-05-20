@@ -22,7 +22,8 @@ public class TreasuriesModel : PageModel
     {
         try
         {
-            var treasuryDirectSecurities = await _treasuryDirectService.GetAuctionedSecurities(asOf);
+            var timeSinceAuction = DateTime.Today.Subtract(asOf);
+	    var treasuryDirectSecurities = await _treasuryDirectService.GetAuctionedSecurities(timeSinceAuction.Days);
 
             return Partial("_Auctions", treasuryDirectSecurities);
         }
