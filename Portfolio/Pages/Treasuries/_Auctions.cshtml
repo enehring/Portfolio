@@ -27,16 +27,14 @@
                 <tr>
                     <td>@security.Cusip</td>
                     <td>@security.IssueDate.ToShortDateString()</td>
-                    <td>
-                        @if (security.SecurityType.HasValue)
+                    <td>@if (security.SecurityType.HasValue)
                         {
-                            <text>@security.SecurityType.Value</text>
+                            @security.SecurityType.Value
                         }
                         else
                         {
                             <text>(none)</text>
-                        }
-                    </td>
+                        }</td>
                     <td>@security.SecurityTerm</td>
                     <td>@security.OfferingAmount</td>
                     <td>
