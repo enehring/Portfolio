@@ -33,4 +33,20 @@ public class TreasuriesModel : PageModel
             return Partial("_AuctionsError");
         }
     }
+
+    public async Task<IActionResult> OnGetAnnouncements(DateTime asOf)
+    {
+	try
+	{
+	    var timeSinceAnnouncement = DateTime.Today.Subtract(asOf);
+	    var treasuryDirectSecurities = await _treasuryDirectService.GetAnnouncedSecurities(timeSinceAnnouncement.Days);
+
+	    return Partial("_Announcements", treasuryDirectSecurities);
+	}
+	catch
+	{
+	    Response.StatusCode = StatusCodes.Status500InternalServerError;
+	    return Partial("_AuctionsError");
+	}
+    }
 }

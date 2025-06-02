@@ -7,7 +7,7 @@
 <script src="https://unpkg.com/htmx.org@2.0.4"></script>
 
 <script>
-    // By default, HTMX will not swap on non-200 status codes. We set shouldSwap to true for 500 errors here so that
+    // By default, HTMX will not swap on non-200 status codes. Set shouldSwap to true for 500 errors here so that
     // the user is shown an error message if any exceptions are thrown
     document.body.addEventListener('htmx:beforeOnLoad', function (e) {
         if (e.detail.xhr.status === 500) {
@@ -17,9 +17,18 @@
 </script>
 
 <div class="text-center">
-    <h1>Todays Auctions</h1>
+    <section>
+	<h1>Todays Auctions</h1>
+	<div hx-get="@Url.Page("", "Auctions", new { asOf = DateTime.Today.ToString("MM-dd-yyyy") })" hx-trigger="load">
 
-    <div hx-get="@Url.Page("", "Auctions", new { asOf = DateTime.Today.ToShortDateString() })" hx-trigger="load">
+	</div>
+    </section>
 
-    </div>
+    <section>
+	<h1>Todays Announcements</h1>
+	<div hx-get="@Url.Page("", "Announcements", new { asOf = DateTime.Today.ToString("MM-dd-yyyy") })" hx-trigger="load">
+
+	</div>
+    </section>
+    
 </div>

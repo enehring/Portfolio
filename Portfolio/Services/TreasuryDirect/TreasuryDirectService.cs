@@ -40,7 +40,6 @@ public class TreasuryDirectService
 
     public async Task<TreasuryDirectSecurityIssuance[]> GetAuctionedSecurities(int daysAgo)
     {
-        //var timeSinceAuction = DateTime.Today.Subtract(asOf);
         var url = $"https://www.treasurydirect.gov/TA_WS/securities/auctioned?days={daysAgo}&format=json";
         var response = await SendTreasuryDirectGetRequest(url);
         var deserializedResponse = JsonSerializer.Deserialize<TreasuryDirectSecurityIssuance[]>(
@@ -48,6 +47,17 @@ public class TreasuryDirectService
             _options);
 
         return deserializedResponse ?? Array.Empty<TreasuryDirectSecurityIssuance>();
+    }
+
+    public async Task<TreasuryDirectSecurityIssuance[]> GetAnnouncedSecurities(int daysAgo)
+    {
+	var url = $"https://www.treasurydirect.gov/TA_WS/securities/announced?days={daysAgo}&format=json";
+	var response = await SendTreasuryDirectGetRequest(url);
+	var deserializedResponse = JsonSerializer.Deserialize<TreasuryDirectSecurityIssuance[]>(
+	    response,
+	    _options);
+
+	return deserializedResponse ?? Array.Empty<TreasuryDirectSecurityIssuance>();
     }
 
     private async Task<string> SendTreasuryDirectGetRequest(string url)
