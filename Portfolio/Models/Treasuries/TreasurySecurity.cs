@@ -1,6 +1,6 @@
-﻿namespace Portfolio.Services.TreasuryDirect.Models;
+﻿namespace Portfolio.Models.Treasuries;
 
-public class TreasuryDirectSecurityIssuance
+public class TreasurySecurity
 {
     public string? Cusip { get; set; }
 
@@ -8,7 +8,7 @@ public class TreasuryDirectSecurityIssuance
 
     public double? OfferingAmount { get; set; }
 
-    public TreasuryDirectSecurityType? SecurityType { get; set; }
+    public TreasurySecurityType? SecurityType { get; set; }
 
     public string? SecurityTerm { get; set; }
 
@@ -25,7 +25,7 @@ public class TreasuryDirectSecurityIssuance
     public DateTime? MaturityDate { get; set; }
 }
 
-public enum TreasuryDirectSecurityType
+public enum TreasurySecurityType
 {
     Undefined = 0,
     Bill = 1,

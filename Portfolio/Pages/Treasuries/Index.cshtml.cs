@@ -23,9 +23,9 @@ public class TreasuriesModel : PageModel
         try
         {
             var timeSinceAuction = DateTime.Today.Subtract(asOf);
-	    var treasuryDirectSecurities = await _treasuryDirectService.GetAuctionedSecurities(timeSinceAuction.Days);
+	    var treasurySecurities = await _treasuryDirectService.GetAuctionedSecurities(timeSinceAuction.Days);
 
-            return Partial("_Auctions", treasuryDirectSecurities);
+            return Partial("_Auctions", treasurySecurities);
         }
         catch
         {
@@ -39,9 +39,9 @@ public class TreasuriesModel : PageModel
 	try
 	{
 	    var timeSinceAnnouncement = DateTime.Today.Subtract(asOf);
-	    var treasuryDirectSecurities = await _treasuryDirectService.GetAnnouncedSecurities(timeSinceAnnouncement.Days);
+	    var treasurySecurities = await _treasuryDirectService.GetAnnouncedSecurities(timeSinceAnnouncement.Days);
 
-	    return Partial("_Announcements", treasuryDirectSecurities);
+	    return Partial("_Announcements", treasurySecurities);
 	}
 	catch
 	{

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using System.Text.Json;
-using Portfolio.Services.TreasuryDirect.Models;
+using Portfolio.Models.Treasuries;
 
 namespace Portfolio.Services.TreasuryDirect;
 
@@ -27,37 +27,37 @@ public class TreasuryDirectService
         };
     }
 
-    public async Task<TreasuryDirectSecurityIssuance?> GetSecurityDetails(string cusip, DateTime issueDate)
+    public async Task<TreasurySecurity?> GetSecurityDetails(string cusip, DateTime issueDate)
     {
         var url = $"https://www.treasurydirect.gov/TA_WS/securities/{cusip}/{issueDate:MM/dd/yyyy}?format=json";
         var response = await SendTreasuryDirectGetRequest(url);
-        var deserializedResponse = JsonSerializer.Deserialize<TreasuryDirectSecurityIssuance>(
+        var deserializedResponse = JsonSerializer.Deserialize<TreasurySecurity>(
             response,
             _options);
 
         return deserializedResponse;
     }
 
-    public async Task<TreasuryDirectSecurityIssuance[]> GetAuctionedSecurities(int daysAgo)
+    public async Task<TreasurySecurity[]> GetAuctionedSecurities(int daysAgo)
     {
         var url = $"https://www.treasurydirect.gov/TA_WS/securities/auctioned?days={daysAgo}&format=json";
         var response = await SendTreasuryDirectGetRequest(url);
-        var deserializedResponse = JsonSerializer.Deserialize<TreasuryDirectSecurityIssuance[]>(
+        var deserializedResponse = JsonSerializer.Deserialize<TreasurySecurity[]>(
             response,
             _options);
 
-        return deserializedResponse ?? Array.Empty<TreasuryDirectSecurityIssuance>();
+        return deserializedResponse ?? Array.Empty<TreasurySecurity>();
     }
 
-    public async Task<TreasuryDirectSecurityIssuance[]> GetAnnouncedSecurities(int daysAgo)
+    public async Task<TreasurySecurity[]> GetAnnouncedSecurities(int daysAgo)
     {
-	var url = $"https://www.treasurydirect.gov/TA_WS/securities/announced?days={daysAgo}&format=json";
-	var response = await SendTreasuryDirectGetRequest(url);
-	var deserializedResponse = JsonSerializer.Deserialize<TreasuryDirectSecurityIssuance[]>(
-	    response,
-	    _options);
-
-	return deserializedResponse ?? Array.Empty<TreasuryDirectSecurityIssuance>();
+        var url = $"https://www.treasurydirect.gov/TA_WS/securities/announced?days={daysAgo}&format=json";
+        var response = await SendTreasuryDirectGetRequest(url);
+        var deserializedResponse = JsonSerializer.Deserialize<TreasurySecurity[]>(
+            response,
+            _options);
+        
+        return deserializedResponse ?? Array.Empty<TreasurySecurity>();
     }
 
     private async Task<string> SendTreasuryDirectGetRequest(string url)
@@ -66,21 +66,27 @@ public class TreasuryDirectService
 
         try
         {
-            var response = await client.GetStringAsync(url);
+            var response = await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
 
+            var body = await response.Content.ReadAsStringAsync();
             // TreasuryDirect returns a 200 status code with "No data" in the body if no security matching the
             // request is found
-            if (response == "No data")
+            if (body == "No data")
             {
                 return string.Empty;
             }
 
-            return response;
+            return body;
         }
         catch (HttpRequestException ex)
         {
-            // TODO: Do something better
-            Console.WriteLine($"GET {url} failed. Status Code: {ex.StatusCode}");
+            var msg = $"GET request failed.\n" +
+                $"\tURL: {url}\n" +
+                $"\tStatus Code: {(int?)ex.StatusCode} ({ex.StatusCode})";
+
+            // TODO: Use a logger
+            Console.WriteLine(msg);
 
             throw;
         }
