@@ -1,4 +1,6 @@
-﻿namespace Portfolio.Models.Treasuries;
+﻿using System;
+
+namespace Portfolio.Models.Treasuries;
 
 public class TreasurySecurity
 {

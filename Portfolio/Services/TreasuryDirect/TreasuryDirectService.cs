@@ -1,6 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿using Portfolio.Models.Treasuries;
+using System;
+using System.Net.Http;
 using System.Text.Json;
-using Portfolio.Models.Treasuries;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace Portfolio.Services.TreasuryDirect;
 
